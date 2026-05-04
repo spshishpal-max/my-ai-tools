@@ -42,3 +42,4 @@ if uploaded_file is not None:
     st.download_button(label="Download Edited Image", data=buf.getvalue(), file_name="ai_edited.jpg", mime="image/jpeg")
 
 st.info("प्रो टिप: साइडबार (बाएँ तरफ) से रंग बदलें और रिजल्ट तुरंत देखें!")
+
