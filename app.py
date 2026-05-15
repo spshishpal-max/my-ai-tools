@@ -17,7 +17,7 @@ bg_rgb = tuple(int(bg_color.lstrip('#')[i:i+2], 16) for i in (0, 2, 4))
 @st.cache_resource
 def get_rembg_session():
     # 'u2netp' एक छोटा और तेज़ AI मॉडल है जो फ्री सर्वर पर अटकता नहीं है
-    return new_session("u2netp")
+  return new_session("u2net_human")
 
 uploaded_file = st.file_uploader("अपनी फोटो अपलोड करें...", type=["jpg", "jpeg", "png"])
 
