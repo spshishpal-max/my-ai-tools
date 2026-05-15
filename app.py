@@ -28,38 +28,49 @@ ticker_html = """
 st.markdown(ticker_html, unsafe_allow_html=True)
 st.write("")
 
-# ----------------- 2. डायनामिक क्रिकेट स्कोर बोर्ड लॉजिक -----------------
-# यह ब्लॉक बिना क्रैश हुए मैच के समय के अनुसार स्वतः लाइव मोड में बदलेगा
+# ----------------- 2. डायनामिक कॉम्पैक्ट क्रिकेट पट्टी और Google Ads लेआउट -----------------
 st.markdown("### 🏏 लाइव आईपीएल क्रिकेट सेंटर (Live Match Board)")
 
-# सिस्टम का वर्तमान समय देखना (घंटे के हिसाब से)
-current_hour = datetime.now().hour
+# स्क्रीन को दो हिस्सों में बांटना (बाएं क्रिकेट, दाएं कमाई वाला विज्ञापन)
+col_cricket, col_ads = st.columns([6, 4]) # 60% जगह मैच को, 40% जगह विज्ञापन को
 
-# मैच स्टेटस को ऑटो-चेंज करने का फॉर्मूला (IPL 2026: LSG vs CSK)
-if current_hour < 19: # शाम 7:00 बजे से पहले - आगामी मैच मोड
-    match_status = "⏳ UPCOMING MATCH (शाम 7:30 बजे शुरू होगा)"
-    toss_detail = "🎲 टॉस शाम 7:00 बजे उछाला जाएगा। दोनों टीमें मैदान पर अभ्यास कर रही हैं।"
-    score_display = "👉 LSG vs CSK (Match 59, Lucknow) - चेन्नई सुपर किंग्स के लिए करो या मरो का मुकाबला!"
-elif current_hour == 19: # शाम 7:00 से 7:30 के बीच - टॉस मोड
-    match_status = "🎲 TOSS UPDATE (टॉस हो चुका है)"
-    toss_detail = "🪙 चेन्नई सुपर किंग्स (CSK) ने टॉस जीतकर पहले गेंदबाजी करने का फैसला किया है!"
-    score_display = "🏏 मैच की पहली गेंद शाम 7:30 बजे फेंकी जाएगी। पिच पर घास कम है, बड़ा स्कोर बनने की उम्मीद।"
-else: # शाम 7:30 बजे के बाद - लाइव स्कोर मोड
-    match_status = "🔴 LIVE MATCH RUNNING (लाइव स्कोरबोर्ड)"
-    toss_detail = "🪙 CSK ने टॉस जीता, पहले गेंदबाजी चुनी | स्थान: इकाना स्टेडियम, लखनऊ"
-    # लाइव बदलते हुए स्कोर का रीयल-टाइम विजुअल इफ़ेक्ट
-    score_display = "🏏 LSG: 164/4 (18.2 Over) | ऋषभ पंत: 54*(32) | ऋतुराज गायकवाड़ की आक्रामक कप्तानी जारी!"
+with col_cricket:
+    current_hour = datetime.now().hour
+    
+    # मैच स्टेटस को ऑटो-चेंज करने का फॉर्मूला (IPL 2026)
+    if current_hour < 19: # शाम 7:00 बजे से पहले
+        match_status = "⏳ UPCOMING"
+        score_display = "LSG vs CSK | 📅 आज शाम 7:30 बजे | टॉस 7:00 बजे उछाला जाएगा"
+    elif current_hour == 19: # शाम 7:00 से 7:30 के बीच
+        match_status = "🎲 TOSS UPDATE"
+        score_display = "🪙 CSK ने टॉस जीतकर पहले गेंदबाजी चुनी! पहली गेंद शाम 7:30 बजे फेंकी जाएगी।"
+    else: # शाम 7:30 बजे के बाद - लाइव मैच मोड
+        match_status = "🔴 LIVE MATCH"
+        score_display = "LSG: 164/4 (18.2) | पंत: 54*(32) • CSK ने टॉस जीतकर गेंदबाजी चुनी"
 
-# क्रिकेट स्कोर का सुंदर चमकीला विजेट बॉक्स
-st.markdown(f"""
-<div style="background-color: #0F172A; color: #F8FAFC; padding: 15px; border-radius: 8px; border-left: 6px solid #38BDF8; box-shadow: 0 4px 6px -1px rgb(0 0 0 / 0.1);">
-    <span style="background-color: #EF4444; color: white; padding: 3px 8px; font-size: 12px; font-weight: bold; border-radius: 4px;">{match_status}</span>
-    <h3 style="color: #38BDF8; margin-top: 8px; margin-bottom: 4px;">Lucknow Super Giants vs Chennai Super Kings</h3>
-    <p style="font-size: 18px; font-weight: bold; margin: 0; color: #10B981;">{score_display}</p>
-    <p style="font-size: 13px; color: #94A3B8; margin-top: 5px; margin-bottom: 0;">ℹ️ {toss_detail}</p>
-</div>
-""", unsafe_allow_html=True)
-st.write("---")
+    # हॉटस्टार स्टाइल पतली क्रिकेट लाइव पट्टी (Compact Design)
+    st.markdown(f"""
+    <div style="background-color: #0F172A; color: #F8FAFC; padding: 10px 15px; border-radius: 6px; border-left: 5px solid #EF4444; display: flex; align-items: center; justify-content: space-between;">
+        <div style="display: flex; align-items: center; gap: 10px;">
+            <span style="background-color: #EF4444; color: white; padding: 2px 6px; font-size: 11px; font-weight: bold; border-radius: 3px; animation: blinker 1.5s linear infinite;">{match_status}</span>
+            <span style="font-size: 16px; font-weight: bold; color: #38BDF8;">IPL 2026:</span>
+            <span style="font-size: 15px; font-weight: bold; color: #F8FAFC;">{score_display}</span>
+        </div>
+    </div>
+    <style> @keyframes blinker {{ 50% {{ opacity: 0; }} }} </style>
+    """, unsafe_allow_html=True)
+
+with col_ads:
+    # ठीक आपके स्क्रीनशॉट के अनुसार दाईं तरफ Google AdSense के लिए शानदार वीआईपी जगह तैयार है
+    st.markdown("""
+    <div style="background-color: #FFF3CD; height: 50px; display: flex; align-items: center; justify-content: center; border: 1px dashed #FFD000; border-radius: 6px; text-align: center; color: #856404; font-weight: bold; font-size: 14px;">
+        💰 Google AdSense कमाई वाला विज्ञापन (Ads Space Here)
+    </div>
+    """, unsafe_allow_html=True)
+
+st.write("")
+st.markdown("---")
+
 
 # Side Control Menu
 st.sidebar.header("👑 एडवांस्ड कंट्रोल पैनल")
