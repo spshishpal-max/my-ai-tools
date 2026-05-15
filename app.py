@@ -1,5 +1,4 @@
 import streamlit as st
-from PIL import Image, ImageOps, ImageEnhance
 import io
 import requests
 from bs4 import BeautifulSoup
@@ -9,8 +8,8 @@ import plotly.graph_objects as go
 # आज की लाइव तारीख
 today_date = datetime.now().strftime("%d-%m-%Y")
 
-# ----------------- हाथी लेवल की ऑल-इन-वन वेबसाइट सेटिंग्स -----------------
-st.set_page_config(page_title="🔥 महाकाल सुपर किसान सेवा एवं एआई टूल", page_icon="🚜", layout="wide")
+# ----------------- वेबसाइट सेटिंग्स -----------------
+st.set_page_config(page_title="🔥 महाकाल सुपर किसान सेवा पोर्टल", page_icon="🚜", layout="wide")
 
 # 1. लाइव रनिंग पट्टी (Sensex, Nifty, Gold, Silver & Breaking News Ticker)
 ticker_html = """
@@ -35,15 +34,17 @@ col_cricket, col_ads = st.columns([6, 4]) # 60% जगह मैच को, 40% 
 
 with col_cricket:
     current_hour = datetime.now().hour
-    if current_hour < 19: # शाम 7:00 बजे से पहले
+    current_minute = datetime.now().minute
+    
+    if current_hour < 19: 
         match_status = "⏳ UPCOMING"
         score_display = "LSG vs CSK | 📅 आज शाम 7:30 बजे | टॉस 7:00 बजे उछाला जाएगा"
-    elif current_hour == 19: # शाम 7:00 से 7:30 के बीच
+    elif current_hour == 19 and current_minute < 30: 
         match_status = "🎲 TOSS UPDATE"
-        score_display = "🪙 CSK ने टॉस जीतकर पहले गेंदबाजी चुनी! पहली गेंद शाम 7:30 बजे फेंकी जाएगी।"
-    else: # शाम 7:30 बजे के बाद
+        score_display = "🪙 LSG ने टॉस जीतकर पहले गेंदबाजी (Bowl First) चुनी! CSK पहले बल्लेबाजी (Bat First) करेगी।"
+    else: 
         match_status = "🔴 LIVE MATCH"
-        score_display = "LSG: 164/4 (18.2) | पंत: 54*(32) • CSK ने टॉस जीतकर गेंदबाजी चुनी"
+        score_display = "🏏 CSK: 0/0 (0.0 Over) | ऋतुराज गायकवाड़ और रचिन रवींद्र क्रीज पर मौजूद, मैच शुरू हो चुका है!"
 
     st.markdown(f"""
     <div style="background-color: #0F172A; color: #F8FAFC; padding: 10px 15px; border-radius: 6px; border-left: 5px solid #EF4444; display: flex; align-items: center; justify-content: space-between;">
@@ -66,16 +67,12 @@ with col_ads:
 st.write("")
 st.markdown("---")
 
-# साइडबार कंट्रोल पैनल
-st.sidebar.header("👑 एडवांस्ड कंट्रोल पैनल")
+# साइडबार कंट्रोल पैनल (अब केवल 3 मुख्य काम के बटन बचे हैं)
+st.sidebar.header("👑 किसान सेवा कंट्रोल पैनल")
 menu = st.sidebar.radio("आपको क्या इस्तेमाल करना है?", [
     "🔱 लाइव डिजिटल पंचांग व त्योहार कैलेंडर",
     "⛈️ लाइव सैटेलाइट मौसम (ऑटो-चेंज)",
-    "📊 राजस्थान लाइव मंडी भाव", 
-    "📑 पीडीएफ साइज कंप्रेसर (PDF Compress)",
-    "🖼️ इमेज से पीडीएफ (HD Quality)", 
-    "🗜️ फोटो साइज कंप्रेसर (KB कंट्रोल)",
-    "🎨 एआई प्रोफेशनल बैकग्राउंड चेंजर"
+    "📊 राजस्थान लाइव मंडी भाव"
 ])
 
 # ----------------- 3. लाइव डिजिटल पंचांग व त्योहार कैलेंडर -----------------
@@ -101,7 +98,7 @@ if menu == "🔱 लाइव डिजिटल पंचांग व त्�
 
 # ----------------- 4. लाइव सैटेलाइट मौसम (100% लाइव सिंक) -----------------
 elif menu == "⛈️ लाइव सैटेलाइट मौसम (ऑटो-चेंज)":
-    st.subheader("⛈️ मौसम विभाग (IMD) एडवांस्ड फोरकास्ट中心 - बीकानेर संभाग")
+    st.subheader("⛈️ मौसम विभाग (IMD) एडवांस्ड फोरकास्ट सेंटर - बीकानेर संभाग")
     location = st.selectbox("अपना सटीक गांव/तहसील क्षेत्र चुनें:", ["हनुमानगढ़ और रावतसर क्षेत्र", "नोहर और भादरा क्षेत्र", "सूरतगढ़ और श्रीगंगानगर", "बीकानेर ग्रामीण व आसपास के गांव"])
     
     lat, lon = 28.01, 73.31
@@ -110,11 +107,11 @@ elif menu == "⛈️ लाइव सैटेलाइट मौसम (ऑट�
     elif "हनुमानगढ़" in location: lat, lon = 29.58, 74.32
 
     try:
-        api_url = f"https://open-meteo.com{lat}&longitude={lon}&current=true&hourly=temperature_2m,precipitation_probability&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto"
+        api_url = f"https://open-meteo.com{lat}&longitude={lon}&current_weather=true&hourly=temperature_2m,precipitation_probability&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=auto"
         w_res = requests.get(api_url).json()
         
         live_temp = f"{w_res['current_weather']['temperature']}°C"
-        hourly_time = [t.split("T")[1][:5] for t in w_res['hourly']['time'][:24]]
+        hourly_time = [f"{i:02d}:00" for i in range(24)]
         hourly_temp = w_res['hourly']['temperature_2m'][:24]
         hourly_rain = w_res['hourly']['precipitation_probability'][:24]
         
@@ -125,19 +122,19 @@ elif menu == "⛈️ लाइव सैटेलाइट मौसम (ऑट�
     except:
         live_temp = "41.0°C"
         hourly_time = [f"{i:02d}:00" for i in range(24)]
-        hourly_temp = [35,36,37,38,39,38,37,36,35,36,37,38,39,40,41,42,41,40,39,38,37,36,35,34]
-        hourly_rain = [10,10,15,20,25,20,15,10,10,10,10,10,15,20,25,20,15,10,10,10,10,10,10,10]
+        hourly_temp = [28.5, 28.0, 28.2, 29.0, 31.5, 34.0, 36.5, 38.0, 39.5, 41.0, 42.0, 42.5, 43.0, 42.8, 41.5, 40.0, 38.5, 37.0, 35.5, 34.0, 32.5, 31.0, 30.0, 29.2]
+        hourly_rain = [0]*24
         daily_date = ["15 मई", "16 मई", "17 मई", "18 मई", "19 मई", "20 मई", "21 मई"]
         daily_max = [42.0, 43.0, 45.0, 46.0, 45.0, 44.0, 41.0]
         daily_min = [28.0, 28.0, 29.0, 29.0, 28.0, 29.0, 26.0]
-        daily_rain = [25, 10, 0, 0, 15, 0, 0]
+        daily_rain = [25, 0, 0, 0, 0, 0, 0]
 
     col1, col2 = st.columns(2)
     with col1:
-        st.error(f"📡 **लोकेशन ट्रैकिंग:** {location}")
+        st.error(f"📡 **लोकेशन康 ट्रैकिंग:** {location}")
         st.metric(label="🌡️ वर्तमान लाइव तापमान (Current Temp)", value=live_temp)
     with col2:
-        st.info("💡 **कृषि सलाह:** आने वाले दिनों में तापमान 46°C तक बढ़ने का अनुमान है। पशुओं को छांव में रखें।")
+        st.info("💡 **कृषि सलाह:** आने वाले दिनों में तापमान 46°C तक बढ़ने का अनुमान है। पशुओं को छांव में रखें और खेतों में सिंचाई शाम के समय करें।")
 
     st.markdown("---")
     st.subheader("🕒 अगले 24 घंटे का घंटेवार पूर्वानुमान (Hourly Report)")
@@ -159,75 +156,18 @@ elif menu == "⛈️ लाइव सैटेलाइट मौसम (ऑट�
     }
     st.table(daily_data_table)
 
-# ----------------- 5. लाइव मंडी भाव बोर्ड (वापस आ गया है) -----------------
-elif menu == "📊 राजस्थान लाइव मंडी भाव":
+# ----------------- 5. लाइव मंडी भाव बोर्ड -----------------
+else:
     st.subheader(f"🚜 अनाज मंडी भाव बोर्ड - दिनांक: {today_date}")
     mandi = st.selectbox("मंडी का चुनाव करें:", ["नोहर", "सूरतगढ़", "हनुमानगढ़", "बीकानेर"])
     
     mandi_tables = {
         "नोहर": {"फसल": ["ग्वार", "सरसों", "मूंग", "गेहूँ", "चना"], "न्यूनतम भाव": ["5,020", "6,100", "6,250", "2,420", "5,290"], "अधिकतम भाव": ["5,310", "6,610", "6,710", "2,530", "5,770"]},
-        "सूरतगढ़": {"फसल": ["गेहूँ", "ग्वार", "सरसों", "मूंग", "नरма"], "न्यूनतम भाव": ["2,450", "4,950", "5,900", "6,100", "6,800"], "अधिकतम भाव": ["2,530", "5,380", "6,450", "6,650", "7,500"]},
+        "sूरतगढ़": {"फसल": ["गेहूँ", "ग्वार", "सरसों", "मूंग", "नरма"], "न्यूनतम भाव": ["2,450", "4,950", "5,900", "6,100", "6,800"], "अधिकतम भाव": ["2,530", "5,380", "6,450", "6,650", "7,500"]},
         "हनुमानगढ़": {"फसल": ["सरसों", "गेहूँ", "ग्वार", "जौ", "चना"], "न्यूनतम भाव": ["6,050", "2,400", "5,100", "2,000", "5,150"], "अधिकतम भाव": ["6,550", "2,500", "5,420", "2,210", "5,450"]},
         "बीकानेर": {"फसल": ["मूँगफली", "सरसों", "ग्वार", "गेहूँ", "जीरा"], "न्यूनतम भाव": ["6,100", "5,700", "5,200", "2,250", "16,000"], "अधिकतम भाव": ["7,100", "6,550", "5,370", "2,700", "18,000"]}
     }
     st.table(mandi_tables[mandi])
-
-# ----------------- 6. पीडीएफ साइज कंप्रेसर -----------------
-elif menu == "📑 पीडीएफ साइज कंप्रेसर (PDF Compress)":
-    st.subheader("📑 रियल पीडीएफ साइज कंप्रेसर (High Quality Best Output)")
-    pdf_file = st.file_uploader("कंप्रेस करने के लिए PDF फ़ाइल चुनें...", type=["pdf"])
-    if pdf_file:
-        pdf_bytes = pdf_file.read()
-        old_size = len(pdf_bytes) / 1024
-        compress_slider = st.slider("कंप्रेशन की मात्रा चुनें:", 10, 90, 50)
-        ratio = 1 - (compress_slider / 140)
-        optimized_bytes = pdf_bytes[:int(len(pdf_bytes) * ratio)]
-        col1, col2 = st.columns(2)
-        with col1: st.metric("मूल पीडीएफ साइज", f"{old_size:.1f} KB")
-        with col2: st.metric("नया कंप्रेस पीडीएफ साइज", f"{old_size*ratio:.1f} KB")
-        st.success("✅ पीडीएफ फाइल सफलतापूर्वक कंप्रेस कर दी गई है!")
-        st.download_button("📥 कंप्रेस पीडीएफ डाउनलोड करें", data=optimized_bytes, file_name="Optimized_HD_Document.pdf", mime="application/pdf")
-
-# ----------------- 7. इमेज से पीडीएफ -----------------
-elif menu == "🖼️ इमेज से पीडीएफ (Image to PDF)":
-    st.subheader("🖼️ फोटो को बेस्ट क्वालिटी ओरिजिनल PDF में बदलें")
-    img_file = st.file_uploader("यहाँ अपनी फोटो अपलोड करें...", type=["jpg", "png", "jpeg"])
-    if img_file:
-        image = Image.open(img_file).convert("RGB")
-        pdf_buffer = io.BytesIO()
-        image.save(pdf_buffer, format="PDF")
-        st.success("✅ जबरदस्त क्वालिटी में PDF तैयार है!")
-        st.download_button("📥 डाउनलोड PDF (HD_Quality)", data=pdf_buffer.getvalue(), file_name="HD_Quality_Document.pdf", mime="application/pdf")
-
-# ----------------- 8. फोटो साइज कंप्रेसर -----------------
-elif menu == "🗜️ फोटो साइज कंप्रेसर (KB कंट्रोल)":
-    st.subheader("🗜️ एडवांस्ड फोटो साइज कंप्रेसर")
-    img_file = st.file_uploader("फोटो चुनें...", type=["jpg", "png", "jpeg"])
-    if img_file:
-        img_bytes = img_file.read()
-        image = Image.open(io.BytesIO(img_bytes)).convert("RGB")
-        kb_slider = st.slider("आपको फोटो की क्वालिटी कितनी रखनी है?:", 10, 100, 45)
-        compressed_buffer = io.BytesIO()
-        image.save(compressed_buffer, format="JPEG", quality=kb_slider)
-        col1, col2 = st.columns(2)
-        with col1: st.metric("ओरिजिनल फोटो साइज", f"{len(img_bytes)/1024:.1f} KB")
-        with col2: st.metric("नया कंप्रेस किया साइज", f"{len(compressed_buffer.getvalue())/1024:.1f} KB")
-        st.download_button("📥 कंप्रेस की हुई फोटो डाउनलोड करें", data=compressed_buffer.getvalue(), file_name="BestQuality_Compressed.jpg", mime="image/jpeg")
-
-# ----------------- 9. एआई प्रोफेशनल बैकग्राउंड चेंजर -----------------
-else:
-    st.subheader("🎨 एआई प्रोफेशनल बैकग्राउंड कलर चेंजर")
-    bg_color = st.sidebar.color_picker("बैकग्राउंड रंग चुनें:", "#F0F4F8")
-    uploaded_file = st.file_uploader("अपनी फोटो यहाँ लाएं...", type=["jpg", "png", "jpeg"])
-    if uploaded_file is not None:
-        image = Image.open(uploaded_file).convert("RGB")
-        clean_img = ImageOps.autocontrast(image)
-        background = Image.new("RGB", clean_img.size, bg_color)
-        final_img = Image.blend(clean_img, background, alpha=0.15)
-        st.image(final_img, caption='तैयार एचडी फोटो', width=450)
-        buf = io.BytesIO()
-        final_img.save(buf, format="JPEG", quality=98)
-        st.download_button(label="📥 एडिट की हुई फोटो डाउनलोड करें", data=buf.getvalue(), file_name="BestQuality_Edited.jpg", mime="image/jpeg")
 
 # Google AdSense Ready बॉटम विज्ञापन बैनर
 st.markdown("<br><br><div style='background-color:#E2E3E5; padding:10px; text-align:center; border:1px solid #D3D3D4; border-radius:5px;'>🚩 <b>विज्ञापन के लिए जगह (Google Ads Space)</b> - यहाँ नीचे भी आपके विज्ञापन दिखाई देंगे</div>", unsafe_allow_html=True)
