@@ -2,3 +2,6 @@ streamlit
 Pillow
 requests
 beautifulsoup4
+reportlab
+python-docx
+pdf2image
