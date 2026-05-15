@@ -19,7 +19,7 @@ st.title("🚜 महाकाल सुपर किसान पंचां�
 st.write(f"🌐 <b>लाइव सर्वर ट्रैकिंग दिनांक:</b> {today_date} | बीकानेर संभाग, नोहर, भादरा, सूरतगढ़ विशेष धमाका।", unsafe_allow_html=True)
 
 # साइडबार कंट्रोल पैनल
-st.sidebar.header("👑 एडवांस्ड控制 पैनल")
+st.sidebar.header("👑 एडवांस्ड कंट्रोल पैनल")
 menu = st.sidebar.radio("आपको क्या इस्तेमाल करना है?", [
     "🔱 लाइव डिजिटल पंचांग व त्योहार कैलेंडर",
     "⛈️ लाइव सैटेलाइट मौसम (ऑटो-चेंज)",
@@ -51,44 +51,39 @@ if menu == "🔱 लाइव डिजिटल पंचांग व त्�
     }
     st.table(festival_data)
 
-# ----------------- 2. लाइव सैटेलाइट मौसम (7 दिन चार्ट + घंटेवार सुविधा) -----------------
+# ----------------- 2. लाइव सैटेलाइट मौसम (एरर-फ्री ग्राफ़ के साथ) -----------------
 elif menu == "⛈️ लाइव सैटेलाइट मौसम (ऑटो-चेंज)":
     st.subheader("⛈️ मौसम विभाग (IMD) एडवांस्ड फोरकास्ट सेंटर - बीकानेर संभाग")
     location = st.selectbox("अपना सटीक गांव/तहसील क्षेत्र चुनें:", ["नोहर और भादरा क्षेत्र", "सूरतगढ़ और श्रीगंगानगर", "बीकानेर ग्रामीण व आसपास के गांव", "हनुमानगढ़ और रावतसर क्षेत्र"])
     
-    # स्थानों के अनुसार अक्षांश और देशांतर तय करना
-    lat, lon = 28.01, 73.31 # Default Bikaner
+    lat, lon = 28.01, 73.31
     if "नोहर" in location: lat, lon = 29.18, 74.77
     elif "सूरतगढ़" in location: lat, lon = 29.32, 73.90
     elif "हनुमानगढ़" in location: lat, lon = 29.58, 74.32
 
-    # सैटेलाइट एपीआई से 7 दिन और घंटेवार मौसम डेटा लोड करना
     try:
         api_url = f"https://open-meteo.com{lat}&longitude={lon}&current_weather=true&hourly=temperature_2m,precipitation_probability&daily=temperature_2m_max,temperature_2m_min,precipitation_probability_max&timezone=Asia%2FKolkata"
         w_res = requests.get(api_url).json()
         
         live_temp = f"{w_res['current_weather']['temperature']}°C"
         
-        # घंटेवार डेटा (अगले 24 घंटे के लिए)
+        # घंटेवार समय को केवल 'घंटे' फॉर्मेट में दिखाने के लिए साफ करना
         hourly_time = [t.split("T")[1] for t in w_res['hourly']['time'][:24]]
         hourly_temp = w_res['hourly']['temperature_2m'][:24]
         hourly_rain = w_res['hourly']['precipitation_probability'][:24]
         
-        # 7 दिनों का डेटा
         daily_date = [datetime.strptime(d, "%Y-%m-%d").strftime("%d %b") for d in w_res['daily']['time']]
         daily_max = w_res['daily']['temperature_2m_max']
         daily_min = w_res['daily']['temperature_2m_min']
         daily_rain = w_res['daily']['precipitation_probability_max']
     except:
-        # बैकअप डेटा
         live_temp = "42.5°C"
-        hourly_time = [f"{i}:00" for i in range(24)]
-        hourly_temp = [30 + (i%5) for i in range(24)]
-        hourly_rain = [20 + (i%30) for i in range(24)]
+        hourly_time = [f"{i:02d}:00" for i in range(24)]
+        hourly_temp = [35 + (i%5) for i in range(24)]
+        hourly_rain = [10 + (i%20) for i in range(24)]
         daily_date = ["आज", "कल", "17 मई", "18 मई", "19 मई", "20 मई", "21 मई"]
-        daily_max, daily_min, daily_rain = [42]*7, [28]*7, [40]*7
+        daily_max, daily_min, daily_rain = [42]*7, [28]*7, [20]*7
 
-    # मुख्य स्क्रीन पर आज का मौसम
     col1, col2 = st.columns(2)
     with col1:
         st.error(f"📡 **लोकेशन ट्रैकिंग:** {location}")
@@ -96,28 +91,27 @@ elif menu == "⛈️ लाइव सैटेलाइट मौसम (ऑट�
     with col2:
         st.info("💡 **कृषि सलाह:** आंधी-तूफान के समय ऊंचे पेड़ों या बिजली के खंभों के नीचे शरण न लें। कटी फसल सुरक्षित रखें।")
 
-    # ---- एआई घंटेवार (Hourly) मौसम चार्ट ----
+    # ---- ठीक किया हुआ घंटेवार चार्ट लॉजिक ----
     st.markdown("---")
     st.subheader("🕒 अगले 24 घंटे का घंटेवार पूर्वानुमान (Hourly Report)")
-    st.write("चुनें कि आप अगले 24 घंटे में तापमान देखना चाहते हैं या बारिश का चांस:")
     
     hourly_view = st.radio("चार्ट का प्रकार चुनें:", ["🌡️ घंटेवार तापमान (°C)", "🌧️ घंटेवार बारिश की संभावना (%)"], horizontal=True)
     
     fig_hourly = go.Figure()
     if "तापमान" in hourly_view:
         fig_hourly.add_trace(go.Scatter(x=hourly_time, y=hourly_temp, mode='lines+markers', name='तापमान', line=dict(color='#FF5733', width=3)))
-        fig_hourly.update_layout(title="अगले 24 घंटे में तापमान का उतार-चढ़ाव", xlab="समय (घंटे)", ylab="तापमान (°C)")
+        # यहाँ एरर को ठीक करने के लिए xaxis_title और yaxis_title का सही कोड डाला गया है
+        fig_hourly.update_layout(title="अगले 24 घंटे में तापमान का उतार-चढ़ाव", xaxis_title="समय (घंटे)", yaxis_title="तापमान (°C)")
     else:
         fig_hourly.add_trace(go.Bar(x=hourly_time, y=hourly_rain, name='बारिश का चांस', marker_color='#3399FF'))
-        fig_hourly.update_layout(title="अगले 24 घंटे में बारिश/अंधड़ की संभावना (%)", xlab="समय (घंटे)", ylab="संभावना (%)", yaxis=dict(range=[0, 100]))
+        fig_hourly.update_layout(title="अगले 24 घंटे में बारिश/अंधड़ की संभावना (%)", xaxis_title="समय (घंटे)", yaxis_title="संभावना (%)")
+        
     st.plotly_chart(fig_hourly, use_container_width=True)
 
     # ---- 7 दिनों का मौसम चार्ट टेबल ----
     st.markdown("---")
     st.subheader("📅 आगामी 7 दिनों का विस्तृत मौसम चार्ट (7 Days Forecast)")
-    st.write("आने वाले पूरे सप्ताह के मौसम की योजना यहाँ देखें:")
     
-    # 7 दिन की सुंदर टेबल
     daily_data_table = {
         "दिनांक (Date)": daily_date,
         "अधिकतम तापमान": [f"{m}°C" for m in daily_max],
@@ -132,8 +126,8 @@ elif menu == "📊 राजस्थान लाइव मंडी भाव"
     mandi = st.selectbox("मंडी का चुनाव करें:", ["नोहर", "सूरतगढ़", "हनुमानगढ़", "बीकानेर"])
     mandi_tables = {
         "नोहर": {"फसल": ["ग्वार", "सरसों", "मूंग", "गेहूँ", "चना"], "न्यूनतम भाव": ["5,020", "6,100", "6,250", "2,420", "5,290"], "अधिकतम भाव": ["5,310", "6,610", "6,710", "2,530", "5,770"]},
-        "सूरतगढ़": {"फसल": ["गेहूँ", "ग्वार", "सरसों", "मूंग", "नरमा"], "न्यूनतम भाव": ["2,450", "4,950", "5,900", "6,100", "6,800"], "अधिकतम भाव": ["2,530", "5,380", "6,450", "6,650", "7,500"]},
-        "हनुमानगढ़": {"फसल": ["सरसों", "गेहूँ", "ग्वार", "जौ", "चना"], "न्यूनतम भाव": ["6,050", "2,400", "5,100", "2,000", "5,150"], "अधिकतम भाव": ["6,550", "2,500", "5,420", "2,210", "5,450"]},
+        "सूरतगढ़": {"fसल": ["गेहूँ", "ग्वार", "सरसों", "मूंग", "नरма"], "न्यूनतम भाव": ["2,450", "4,950", "5,900", "6,100", "6,800"], "अधिकतम भाव": ["2,530", "5,380", "6,450", "6,650", "7,500"]},
+        "हनुमानगढ़": {"fसल": ["सरसों", "गेहूँ", "ग्वार", "जौ", "चना"], "न्यूनतम भाव": ["6,050", "2,400", "5,100", "2,000", "5,150"], "अधिकतम भाव": ["6,550", "2,500", "5,420", "2,210", "5,450"]},
         "बीकानेर": {"फसल": ["मूँगफली", "सरसों", "ग्वार", "गेहूँ", "जीरा"], "न्यूनतम भाव": ["6,100", "5,700", "5,200", "2,250", "16,000"], "अधिकतम भाव": ["7,100", "6,550", "5,370", "2,700", "18,000"]}
     }
     st.table(mandi_tables[mandi])
