@@ -47,3 +47,15 @@ if uploaded_file is not None:
         
     except Exception as e:
         st.error("सर्वर पर लोड अधिक है। कृपया 'Reboot' करके दोबारा कोशिश करें।")
+# Streamlit के एडमिन बटन और मेनू को छिपाने के लिए CSS
+hide_streamlit_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            .viewerBadge_container__1QS1Z {display: none !important;}
+            button[title="View source code"] {display: none !important;}
+            div[data-testid="stStatusWidget"] {display: none !important;}
+            .stAppDeployButton {display: none !important;}
+            </style>
+            """
+st.markdown(hide_streamlit_style, unsafe_allow_html=True)
