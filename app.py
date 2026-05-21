@@ -1,6 +1,9 @@
 import streamlit as st
 
-# ऑल-इन-वन यूटिलिटी और सरकारी लिंक पोर्टल
+# यह लाइन आपकी स्क्रीन को पूरी चौड़ाई देगी ताकि लेआउट अच्छा दिखे
+st.set_page_config(layout="wide")
+
+# CSS स्टाइल - जो टेक्स्ट को सुंदर बटन में बदल देगा
 st.markdown("""
 <style>
     .main-container {
@@ -38,7 +41,7 @@ st.markdown("""
     }
     .grid-container {
         display: grid;
-        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
         gap: 15px;
     }
     .link-btn {
@@ -50,7 +53,7 @@ st.markdown("""
         font-size: 15px;
         font-weight: 600;
         border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.03);
+        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
         border: 1px solid #e1e8ed;
         transition: all 0.3s ease;
         text-align: center;
