@@ -1,22 +1,108 @@
 import streamlit as st
 
-# ----------------- 11zon ऑफिशियल टूल लिंक लेआउट -----------------
-st.markdown("<h2 style='text-align: center; color: #EF4444;'>📄 प्रीमियम सुपर-फास्ट PDF कंप्रेसर सेंटर</h2>", unsafe_allow_html=True)
-st.write("बड़ी फाइलों को बिना किसी एरर के 100% सुरक्षित और भारी मात्रा में छोटा (MB से KB) करने के लिए नीचे दिए गए बटन पर क्लिक करें। यह टूल आपको सीधे आधिकारिक हाई-कंप्रेशन सर्वर पर ले जाएगा।")
-
-# एक सुंदर बॉक्स और सीधा लिंक बटन बनाना
+# ऑल-इन-वन यूटिलिटी और सरकारी लिंक पोर्टल
 st.markdown("""
-<div style="background-color: #F8FAFC; border: 1px solid #E2E8F0; padding: 25px; border-radius: 10px; text-align: center; box-shadow: 0 4px 6px -1px rgba(0,0,0,0.1); margin-top: 20px;">
-    <div style="font-size: 50px; margin-bottom: 10px;">⚡</div>
-    <h3 style="color: #1E293B; margin-bottom: 15px;">11zon ऑफिशियल कंप्रेशन इंजन</h3>
-    <p style="color: #64748B; font-size: 14px; margin-bottom: 20px;">चूंकि यह टूल सीधे आधिकारिक सुरक्षित क्लाउड से चलता है, यह आपकी 3.80 MB की फाइल को तुरंत 200 KB से कम में बदल देगा।</p>
-    <a href="https://11zon.com" target="_blank" style="text-decoration: none;">
-        <button style="background-color: #EF4444; color: white; border: none; padding: 12px 35px; font-size: 16px; font-weight: bold; border-radius: 6px; cursor: pointer; box-shadow: 0 2px 4px rgba(239, 68, 68, 0.3); transition: 0.3s;">
-            ओपन 11zon कंप्रेसर (New Window) ↗
-        </button>
-    </a>
+<style>
+    .main-container {
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        background: linear-gradient(135deg, #f5f7fa 0%, #e4ecf7 100%);
+        padding: 30px;
+        border-radius: 15px;
+        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
+        max-width: 900px;
+        margin: auto;
+    }
+    .main-title {
+        color: #1e3c72;
+        font-size: 30px;
+        font-weight: bold;
+        text-align: center;
+        margin-bottom: 5px;
+    }
+    .subtitle {
+        color: #555;
+        font-size: 16px;
+        text-align: center;
+        margin-bottom: 30px;
+    }
+    .category-section {
+        margin-bottom: 25px;
+    }
+    .category-title {
+        color: #d9534f;
+        font-size: 18px;
+        font-weight: bold;
+        border-bottom: 2px solid #d9534f;
+        padding-bottom: 5px;
+        margin-bottom: 15px;
+    }
+    .grid-container {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+        gap: 15px;
+    }
+    .link-btn {
+        display: block;
+        padding: 15px;
+        background: #ffffff;
+        color: #2c3e50 !important;
+        text-decoration: none !important;
+        font-size: 15px;
+        font-weight: 600;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0,0,0,0.03);
+        border: 1px solid #e1e8ed;
+        transition: all 0.3s ease;
+        text-align: center;
+    }
+    .link-btn:hover {
+        background: #1e3c72;
+        color: #ffffff !important;
+        transform: translateY(-3px);
+        box-shadow: 0 6px 12px rgba(19, 39, 71, 0.2);
+    }
+</style>
+
+<div class="main-container">
+    <div class="main-title">🇮🇳 11zon ऑल-इन-वन डिजिटल सेवा पोर्टल</div>
+    <div class="subtitle">सभी महत्वपूर्ण सरकारी, श्रम और किसान सेवाएं एक ही स्थान पर</div>
+    
+    <!-- श्रम एवं रोजगार सेवाएं -->
+    <div class="category-section">
+        <div class="category-title">💼 श्रम, पीएफ और कर्मचारी सेवाएं (PF & ESIC)</div>
+        <div class="grid-container">
+            <a href="https://epfindia.gov.in" target="_blank" class="link-btn">💰 PF मेम्बर पोर्टल (EPFO)</a>
+            <a href="https://esic.gov.in" target="_blank" class="link-btn">🆔 ESIC पहचान पोर्टल</a>
+            <a href="https://eshram.gov.in" target="_blank" class="link-btn">🪪 ई-श्रम कार्ड (e-Shram)</a>
+        </div>
+    </div>
+
+    <!-- किसान एवं मंडी सेवाएं -->
+    <div class="category-section">
+        <div class="category-title">🌾 किसान कल्याण एवं कृषि सेवाएं</div>
+        <div class="grid-container">
+            <a href="https://agmarknet.gov.in" target="_blank" class="link-btn">📊 दैनिक मंडी भाव (Agmarknet)</a>
+            <a href="https://pmkisan.gov.in" target="_blank" class="link-btn">🚜 PM किसान सम्मान निधि</a>
+            <a href="https://imd.gov.in" target="_blank" class="link-btn">🌤️ मौसम विभाग (IMD Weather)</a>
+        </div>
+    </div>
+
+    <!-- दैनिक कैलेंडर एवं पंचांग -->
+    <div class="category-section">
+        <div class="category-title">📅 दैनिक पंचांग एवं कैलेंडर</div>
+        <div class="grid-container">
+            <a href="https://drikpanchang.com" target="_blank" class="link-btn">🗓️ हिंदी कैलेंडर / पंचांग</a>
+        </div>
+    </div>
+
+    <!-- प्रमुख सरकारी मुख्य वेबसाइट्स -->
+    <div class="category-section">
+        <div class="category-title">🏛️ राष्ट्रीय एवं राज्य स्तरीय पोर्टल</div>
+        <div class="grid-container">
+            <a href="https://india.gov.in" target="_blank" class="link-btn">🏛️ भारत सरकार (Govt. of India)</a>
+            <a href="https://rajasthan.gov.in" target="_blank" class="link-btn">🎨 राजस्थान सरकार (Govt. of Raj)</a>
+            <a href="https://sansad.in" target="_blank" class="link-btn">👑 राज्यसभा पोर्टल (Rajya Sabha)</a>
+        </div>
+    </div>
 </div>
 """, unsafe_allow_html=True)
-
-st.write("")
-st.info("💡 नोट: बटन पर क्लिक करते ही कंप्रेसर नए टैब में सुरक्षित खुल जाएगा, जिससे आपकी यह वेबसाइट भी बैकग्राउंड में खुली रहेगी।")
