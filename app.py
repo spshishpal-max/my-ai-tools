@@ -1,68 +1,66 @@
 import streamlit as st
 
-# यह लाइन आपकी स्क्रीन को पूरी चौड़ाई देगी ताकि लेआउट अच्छा दिखे
-st.set_page_config(layout="wide")
-
-# CSS स्टाइल - जो टेक्स्ट को सुंदर बटन में बदल देगा
+# यह लाइन आपके कोड को स्क्रीन पर बटन में बदलेगी
 st.markdown("""
 <style>
     .main-container {
-        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-        background: linear-gradient(135deg, #f5f7fa 0%, #e4ecf7 100%);
-        padding: 30px;
-        border-radius: 15px;
-        box-shadow: 0 10px 25px rgba(0,0,0,0.08);
-        max-width: 900px;
+        font-family: 'Segoe UI', Arial, sans-serif;
+        background: #f4f6f9;
+        padding: 20px;
+        border-radius: 12px;
+        max-width: 850px;
         margin: auto;
     }
     .main-title {
         color: #1e3c72;
-        font-size: 30px;
+        font-size: 28px;
         font-weight: bold;
         text-align: center;
         margin-bottom: 5px;
     }
     .subtitle {
-        color: #555;
-        font-size: 16px;
+        color: #666;
+        font-size: 15px;
         text-align: center;
-        margin-bottom: 30px;
+        margin-bottom: 25px;
     }
     .category-section {
-        margin-bottom: 25px;
+        background: white;
+        padding: 20px;
+        border-radius: 10px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.05);
     }
     .category-title {
         color: #d9534f;
         font-size: 18px;
         font-weight: bold;
-        border-bottom: 2px solid #d9534f;
-        padding-bottom: 5px;
+        border-bottom: 2px solid #f0f0f0;
+        padding-bottom: 8px;
         margin-bottom: 15px;
     }
     .grid-container {
         display: grid;
         grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
-        gap: 15px;
+        gap: 12px;
     }
     .link-btn {
         display: block;
-        padding: 15px;
-        background: #ffffff;
-        color: #2c3e50 !important;
+        padding: 14px;
+        background: #f8f9fa;
+        color: #1e3c72 !important;
         text-decoration: none !important;
         font-size: 15px;
-        font-weight: 600;
-        border-radius: 8px;
-        box-shadow: 0 4px 6px rgba(0,0,0,0.05);
-        border: 1px solid #e1e8ed;
-        transition: all 0.3s ease;
+        font-weight: bold;
+        border-radius: 6px;
+        border: 1px solid #e2e8f0;
         text-align: center;
+        transition: all 0.2s;
     }
     .link-btn:hover {
         background: #1e3c72;
-        color: #ffffff !important;
-        transform: translateY(-3px);
-        box-shadow: 0 6px 12px rgba(19, 39, 71, 0.2);
+        color: white !important;
+        transform: translateY(-2px);
     }
 </style>
 
